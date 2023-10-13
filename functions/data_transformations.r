@@ -34,50 +34,17 @@ function(datetime_var, offset_in_days){
  return(iso8601_string)
 }
 
+# Transform volumes
 
-# GQL-function
-
-vol_qry <- function(id, from, to) {
-  query <- sprintf(
-    '{
-      trafficRegistrationPoint(id: "%s") {
-        id
-        name
-        latestData {
-          volumeByHour(from: "%s", to: "%s") {
-            edges {
-              node {
-                from
-                to
-                volume {
-                  car
-                  heavyVehicle
-                  total
-                }
-              }
-            }
-          }
-        }
-        location {
-          coordinates {
-            latLon {
-              lat
-              lon
-            }
-          }
-        }
-      }
-    }', id, from, to)
-  
-  return(query)
+transform_volumes <- function(data) {
+  volumes <- data$trafficData$volume$byHour$edges
+  df <- purrr::map_dfr(volumes, ~{
+    tibble::tibble(
+      from = .x$node$from,
+      to = .x$node$to,
+      volume = .x$node$total$volumeNumbers$volume
+    )
+  })
+  return(df)
 }
-
-GQL(
-  vol_qry(
-    id=stations_metadata_df$id[1], 
-    from=to_iso8601(stations_metadata_df$latestData[1],-4),
-    to=to_iso8601(stations_metadata_df$latestData[1],0)
-  ),
-  .url = configs$vegvesen_url
-)
 
