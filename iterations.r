@@ -10,7 +10,7 @@ library(anytime)
 library(readr)
 library(yaml)
 
-#### 1: Beginning of script
+#### 1: Beginning of script ##
 
 # Load function for posting GQL-queries and retrieving data: 
 source("functions/GQL_function.r")
