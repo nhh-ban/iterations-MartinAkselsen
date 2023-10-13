@@ -6,6 +6,7 @@ transform_metadata_to_df <- function(stations_metadata) {
     list_rbind() %>%
     mutate(latestData = map_chr(latestData, 1, .default = NA_character_)) %>%
     mutate(latestData = as_datetime(latestData, tz = "Europe/Berlin")) %>%
+    mutate(latestData = with_tz(latestData, "UTC")) %>% 
     mutate(location = map(location, unlist)) %>%
     mutate(
       lat = map_dbl(location, "latLon.lat"),
