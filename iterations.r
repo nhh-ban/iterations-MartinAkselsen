@@ -32,7 +32,7 @@ stations_metadata <-
     ) 
 
 
-#### 2: Transforming metadata # 
+#### 2: Transforming metadata
 
 source("functions/data_transformations.r")
 
